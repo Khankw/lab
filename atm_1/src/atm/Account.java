@@ -4,6 +4,10 @@ public class Account { // 각 유저가 갖는 복수의 계좌?
 	private int account;
 	private int money;
 
+	public Account(int account) {
+		this.account=account;
+	}
+	
 	public void addMoney(int money) {
 		this.money += money;
 	}
