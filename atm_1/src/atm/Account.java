@@ -1,13 +1,13 @@
 package atm;
 
 public class Account { // 각 유저가 갖는 복수의 계좌?
-	private int account;
+	private int code;
 	private int money;
 
-	public Account(int account) {
-		this.account=account;
+	public Account(int code) {
+		this.code = code;
 	}
-	
+
 	public void addMoney(int money) {
 		this.money += money;
 	}
@@ -23,6 +23,6 @@ public class Account { // 각 유저가 갖는 복수의 계좌?
 
 	@Override
 	public String toString() {
-		return String.format("계좌 %d - 잔액 %d원", account, money);
+		return String.format("계좌 %d - 잔액 %d원", code, money);
 	}
 }
