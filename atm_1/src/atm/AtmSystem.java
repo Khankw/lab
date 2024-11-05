@@ -167,6 +167,14 @@ public class AtmSystem {
 			System.err.println("입력범위 오류");
 			return;
 		}
+
+		String pw = (String) input("비밀번호 입력", STR);
+
+		if (!user.getPassword().equals(pw)) {
+			System.err.println("비밀번호가 틀렸습니다.");
+			return;
+		}
+		
 		user.removeAccount(user.getAccountByIndex(sel));
 		System.out.println("계좌철회완료");
 	}
