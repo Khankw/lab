@@ -62,14 +62,14 @@ public class User {
 	public boolean equals(Object obj) {
 		if (obj instanceof User) {
 			User other = (User) obj;
-			return other.code == this.code && other.pw.equals(other.pw);
+			return other.code == this.code && other.pw.equals(this.pw);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		String msg = String.format("%s님 계좌 목록\n", this.name);
+		String msg = String.format("%s(%d)님 계좌 목록\n", this.name, this.code);
 		int size = accounts.size();
 		for (int i = 0; i < size; i++) {
 			msg += String.format("%d) %s", i + 1, accounts.get(i));
