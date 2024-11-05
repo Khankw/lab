@@ -6,7 +6,7 @@ public class User {
 	private int code; // 부여 ID?
 	private String name;
 	private String pw;
-	private ArrayList<Account> accounts;
+	private ArrayList<Account> accounts =new ArrayList<>();
 
 	public User(int code, String pw) {
 		this.code = code;
