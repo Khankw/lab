@@ -8,6 +8,10 @@ public class Account {
 		this.code = code;
 	}
 
+	public int getMoney() {
+		return money;
+	}
+	
 	public void addMoney(int money) {
 		this.money += money;
 	}
