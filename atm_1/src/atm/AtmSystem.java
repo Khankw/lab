@@ -1,5 +1,10 @@
 package atm;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -28,6 +33,13 @@ public class AtmSystem {
 
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
+
+	private FileWriter fileWriter;
+	private FileReader fileReader;
+	private BufferedReader bufferedReader;
+
+	private String fileName = "ATM.txt";
+	private File file = new File(fileName);
 
 	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
@@ -84,7 +96,7 @@ public class AtmSystem {
 			load();
 		else if (sel == EXIT) {
 			System.out.println("시스템을 종료합니다.");
-			isRun = false;
+//			isRun = false;
 		}
 	}
 
@@ -231,9 +243,9 @@ public class AtmSystem {
 
 	private Account selectAccount() {
 		User user = users.get(log);
-		for(int i=0;i<user.getAccountSize();i++) {
+		for (int i = 0; i < user.getAccountSize(); i++) {
 			int code = user.getAccountByIndex(i).getCode();
-			System.out.println(String.format("%d) %d", i+1, code));
+			System.out.println(String.format("%d) %d", i + 1, code));
 		}
 
 		int sel = (int) input("계좌 선택", NUM) - 1;
@@ -323,7 +335,7 @@ public class AtmSystem {
 	private Account getAccountByCode(int code) {
 		for (int i = 0; i < users.size(); i++) {
 			Account account = users.get(i).getAccountByCode(code);
-			if (account!=null)
+			if (account != null)
 				return account;
 		}
 		return null;
@@ -361,11 +373,11 @@ public class AtmSystem {
 	private void closeAccount() {
 		System.out.println("====== 계좌철회 ======");
 		User user = users.get(log);
-		for(int i=0;i<user.getAccountSize();i++) {
+		for (int i = 0; i < user.getAccountSize(); i++) {
 			int code = user.getAccountByIndex(i).getCode();
-			System.out.println(String.format("%d) %d", i+1, code));
+			System.out.println(String.format("%d) %d", i + 1, code));
 		}
-		
+
 		int sel = (int) input("계좌 선택", NUM) - 1;
 
 		if (sel < 0 || sel >= user.getAccountSize()) {
@@ -378,11 +390,121 @@ public class AtmSystem {
 	}
 
 	private void save() {
+		System.out.println("====== 저장 ======");
+		try {
+			fileWriter = new FileWriter(file);
+			fileWriter.write(dataToString());
+			System.out.println("저장완료");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("저장실패");
+		} finally {
+			try {
+				fileWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
+	private String dataToString() {
+		int size = users.size();
+		String data = size + "\n";
+		for (int i = 0; i < size; i++) {
+			User user = users.get(i);
+			int code = user.getCode();
+			String name = user.getName();
+			String pw = user.getPassword();
+			int accSize = user.getAccountSize();
+			data += String.format("%d,%s,%s,%d/", code, name, pw, accSize);
+			for (int j = 0; j < accSize; j++) {
+				Account account = user.getAccountByIndex(j);
+				int accCode = account.getCode();
+				int accMoney = account.getMoney();
+				data += String.format("%d,%d", accCode, accMoney);
+				if (j < accSize - 1)
+					data += "/";
+			}
+			if (i < size - 1)
+				data += "\n";
+
+		}
+		return data;
 	}
 
 	private void load() {
+		if (!file.exists()) {
+			System.err.println("파일이 존재하지 않습니다.");
+			return;
+		}
 
+		try {
+			fileReader = new FileReader(file);
+			bufferedReader = new BufferedReader(fileReader);
+			String data = "";
+			while (bufferedReader.ready()) {
+				data += bufferedReader.readLine() + "\n";
+			}
+
+			stringToData(data);
+			log = -1;
+
+			System.out.println("로드성공");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("로드실패");
+		}
+
+	}
+
+	private void stringToData(String data) {
+		String[] datas = data.split("\n");
+		int length = datas.length;
+		if (length == 0) {
+			System.err.println("로드할 데이터가 없습니다.");
+			return;
+		}
+		try {
+			System.out.println("진입");
+			users.clear();
+			int size = Integer.parseInt(datas[0]);
+			System.out.println(size);
+			if (length < size + 1)
+				size = length - 1;
+			for (int i = 1; i <= size; i++) {
+				System.out.println(datas[i]);
+				String[] info = datas[i].split("/");
+				String[] userInfo = info[0].split(",");
+				if (userInfo.length != 4) {
+					System.err.println("잘못된 정보라인입니다.");
+					continue;
+				}
+				length = info.length;
+				int code = Integer.parseInt(userInfo[0]);
+				String name = userInfo[1];
+				String pw = userInfo[2];
+				int accSize = Integer.parseInt(userInfo[3]);
+				System.out.println(code + " " + name + " " + pw + " " + accSize);
+				User user = new User(code, name, pw);
+				if (length < accSize + 1)
+					accSize = length - 1;
+				System.out.println(accSize);
+				for (int j = 1; j <= accSize; j++) {
+					String[] accInfo = info[j].split(",");
+					int accCode = Integer.parseInt(accInfo[0]);
+					int accMoney = 0;
+					if (accInfo.length > 1)
+						accMoney = Integer.parseInt(accInfo[1]);
+					System.out.println(accCode + " " + accMoney);
+					Account account = new Account(accCode);
+					account.addMoney(accMoney);
+					user.addAccount(account);
+				}
+				users.add(user);
+			}
+		} catch (Exception e) {
+			System.err.println("데이터 변환 실패");
+		}
 	}
 
 	private Object input(String msg, int type) {
