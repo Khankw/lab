@@ -437,7 +437,7 @@ public class AtmSystem {
 			System.err.println("파일이 존재하지 않습니다.");
 			return;
 		}
-
+		System.out.println("====== 로드 ======");
 		try {
 			fileReader = new FileReader(file);
 			bufferedReader = new BufferedReader(fileReader);
@@ -465,39 +465,36 @@ public class AtmSystem {
 			return;
 		}
 		try {
-			System.out.println("진입");
 			users.clear();
 			int size = Integer.parseInt(datas[0]);
-			System.out.println(size);
 			if (length < size + 1)
 				size = length - 1;
 			for (int i = 1; i <= size; i++) {
-				System.out.println(datas[i]);
 				String[] info = datas[i].split("/");
 				String[] userInfo = info[0].split(",");
 				if (userInfo.length != 4) {
 					System.err.println("잘못된 정보라인입니다.");
 					continue;
 				}
-				length = info.length;
 				int code = Integer.parseInt(userInfo[0]);
 				String name = userInfo[1];
 				String pw = userInfo[2];
 				int accSize = Integer.parseInt(userInfo[3]);
-				System.out.println(code + " " + name + " " + pw + " " + accSize);
 				User user = new User(code, name, pw);
+				length = info.length;
 				if (length < accSize + 1)
 					accSize = length - 1;
-				System.out.println(accSize);
 				for (int j = 1; j <= accSize; j++) {
 					String[] accInfo = info[j].split(",");
+
 					int accCode = Integer.parseInt(accInfo[0]);
+					Account account = new Account(accCode);
+
 					int accMoney = 0;
 					if (accInfo.length > 1)
 						accMoney = Integer.parseInt(accInfo[1]);
-					System.out.println(accCode + " " + accMoney);
-					Account account = new Account(accCode);
 					account.addMoney(accMoney);
+
 					user.addAccount(account);
 				}
 				users.add(user);
