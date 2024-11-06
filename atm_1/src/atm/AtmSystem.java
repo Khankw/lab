@@ -25,7 +25,7 @@ public class AtmSystem {
 	private final int STR = 2;
 
 	private final int MAXUSER = 9000;
-	
+
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
 
@@ -106,11 +106,11 @@ public class AtmSystem {
 	}
 
 	private void join() {
-		if(users.size()==MAXUSER) {
+		if (users.size() == MAXUSER) {
 			System.err.println("더 이상 가입불가합니다.");
 			return;
 		}
-		
+
 		System.out.println("====== 회원가입 ======");
 		String name = (String) input("이름 입력", STR);
 		String pw = (String) input("비밀번호 입력", STR);
@@ -174,7 +174,7 @@ public class AtmSystem {
 
 	private void banking() {
 		// 뱅킹기능(입금,출금,조회,이체,계좌생성,계좌철회)
-		while(true) {
+		while (true) {
 			System.out.println("======== 뱅킹 ========");
 			System.out.println("1)입금");
 			System.out.println("2)출금");
@@ -186,13 +186,13 @@ public class AtmSystem {
 			User user = users.get(log);
 			System.out.println(user);
 			int sel = (int) input("메뉴 선택", NUM);
-			
-			int size=user.getAccountSize();
-			if(size==0 && (sel >= DEPOSIT && sel <= TRANSFER || sel == CLOSE_ACCOUNT)) {
+
+			int size = user.getAccountSize();
+			if (size == 0 && (sel >= DEPOSIT && sel <= TRANSFER || sel == CLOSE_ACCOUNT)) {
 				System.err.println("개설된 계좌가 없습니다.");
 				continue;
 			}
-			
+
 			if (sel == DEPOSIT)
 				deposit();
 			else if (sel == WITHDRAWAL)
@@ -213,22 +213,22 @@ public class AtmSystem {
 	private void deposit() {
 		System.out.println("======== 입금 ========");
 		Account account = selectAccount();
-				
-		if(account==null)
+
+		if (account == null)
 			return;
-		
+
 		System.out.println(account);
-		int money=(int) input("입금 금액 입력", NUM);
-		if(money<=0) {
+		int money = (int) input("입금 금액 입력", NUM);
+		if (money <= 0) {
 			System.err.println("0이하의 금액은 입금이 불가합니다.");
 			return;
 		}
-		
+
 		account.addMoney(money);
-		System.out.println(account);
+		System.out.println(getAccountInfo(account));
 		System.out.println("입금완료");
 	}
-	
+
 	private Account selectAccount() {
 		User user = users.get(log);
 		System.out.println(user);
@@ -238,94 +238,99 @@ public class AtmSystem {
 			System.err.println("입력범위 오류");
 			return null;
 		}
-		
+
 		return user.getAccountByIndex(sel);
-	}	
-	
+	}
+
+	private String getAccountInfo(Account account) {
+		int code = account.getCode();
+		int money = account.getMoney();
+		String str = String.format("계좌 %d - 잔액 : %d원", code, money);
+		return str;
+	}
+
 	private void withdrawal() {
 		System.out.println("======== 출금 ========");
 		Account account = selectAccount();
-		
-		if(account==null)
+
+		if (account == null)
 			return;
 
 		System.out.println(account);
-		int money=(int) input("출금 금액 입력", NUM);
-		if(money<=0) {
+		int money = (int) input("출금 금액 입력", NUM);
+		if (money <= 0) {
 			System.err.println("0이하의 금액은 출금이 불가합니다.");
 			return;
 		}
-		
-		if(money > account.getMoney()) {
+
+		if (money > account.getMoney()) {
 			System.err.println("계좌의 잔액이 부족합니다.");
 			return;
 		}
-			
-		
+
 		account.addMoney(-money);
-		
-		System.out.println(account);
+
+		System.out.println(getAccountInfo(account));
 		System.out.println("출금완료");
 	}
 
 	private void balance() {
 		System.out.println("======== 조회 ========");
 		Account account = selectAccount();
-		
-		if(account==null)
+
+		if (account == null)
 			return;
-		
-		System.out.println(account);
+
+		System.out.println(getAccountInfo(account));
 	}
 
 	private void transfer() {
 		System.out.println("======== 이체 ========");
 		Account account = selectAccount();
-		
-		if(account==null)
+
+		if (account == null)
 			return;
 
-		int code=(int) input("이체할 계좌번호 입력", NUM);
-		
-		if(code == account.getCode()) {
+		int code = (int) input("이체할 계좌번호 입력", NUM);
+
+		if (code == account.getCode()) {
 			System.err.println("동일계좌로는 이체불가합니다.");
 			return;
 		}
-		
-		Account transferAcc= getAccountByCode(code);
-		if(transferAcc==null) {
+
+		Account transferAcc = getAccountByCode(code);
+		if (transferAcc == null) {
 			System.err.println("없는 계좌 번호입니다.");
 			return;
 		}
-		
+
 		System.out.println(account);
-		int money=(int) input("출금 금액 입력", NUM);
-		if(money<=0) {
+		int money = (int) input("출금 금액 입력", NUM);
+		if (money <= 0) {
 			System.err.println("0이하의 금액은 출금이 불가합니다.");
 			return;
 		}
-		
-		if(money > account.getMoney()) {
+
+		if (money > account.getMoney()) {
 			System.err.println("계좌의 잔액이 부족합니다.");
 			return;
 		}
-		
-		
+
 		account.addMoney(-money);
 		transferAcc.addMoney(money);
-		
-		System.out.println(account);
+
+		System.out.println(getAccountInfo(account));
 		System.out.println("이체완료");
 	}
 
 	private Account getAccountByCode(int code) {
-		Account account=null;
-		for(int i=0;i<users.size();i++) {
+		Account account = null;
+		for (int i = 0; i < users.size(); i++) {
 			account = users.get(i).getAccountByCode(code);
 		}
 		return account;
 	}
-	
+
 	private void openAccount() {
 		User user = users.get(log);
 		if (user.getAccountSize() == 3) {
@@ -365,7 +370,7 @@ public class AtmSystem {
 			System.err.println("입력범위 오류");
 			return;
 		}
-		
+
 		user.removeAccount(sel);
 		System.out.println("계좌철회완료");
 	}
