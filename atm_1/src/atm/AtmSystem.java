@@ -7,11 +7,20 @@ import java.util.Scanner;
 public class AtmSystem {
 	private final int JOIN = 1;
 	private final int LEAVE = 2;
-	private final int OPEN_ACCOUNT = 3;
-	private final int CLOSE_ACCOUNT = 4;
-	private final int LOGIN = 5;
-	private final int LOGOUT = 6;
-
+	private final int LOGIN = 3;
+	private final int LOGOUT = 4;
+	private final int BANKING = 5;
+	private final int SAVE = 6;
+	private final int LOAD = 7;
+	private final int EXIT = 0;
+	// 뱅킹메뉴
+	private final int DEPOSIT = 1;
+	private final int WITHDRAWAL = 2;
+	private final int BALANCE = 3;
+	private final int TRANSFER = 4;
+	private final int OPEN_ACCOUNT = 5;
+	private final int CLOSE_ACCOUNT = 6;
+	
 	private final int NUM = 1;
 	private final int STR = 2;
 
@@ -21,24 +30,48 @@ public class AtmSystem {
 	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
 
+	private boolean isRun = true;
 	public void run() {
 		// 회원가입/탈퇴
 		// 계좌신청/ 철회 (1인 3계좌까지)
 		// 로그인
-		while (true) {
-			printMenu();
-			runMenu();
+		// 뱅킹기능(입금,출금,조회,이체,계좌생성,계좌철회)
+		// 파일기능(저장,로드)
+		//load();
+		while (isRun) {
+			runMain();
 		}
 	}
-
-	private void printMenu() {
-		printUsersInfo();
+	private void runMain() {
 		System.out.println("1)회원가입");
 		System.out.println("2)회원탈퇴");
-		System.out.println("3)계좌신청");
-		System.out.println("4)계좌철회");
-		System.out.println("5)로그인");
-		System.out.println("6)로그아웃");
+		System.out.println("3)로그인");
+		System.out.println("4)로그아웃");
+		System.out.println("5)뱅킹");
+		System.out.println("6)저장");
+		System.out.println("7)로드");
+		System.out.println("0)종료");
+		
+		int sel = (int) input("메뉴 선택", NUM);
+
+		if (sel == JOIN)
+			join();
+		else if (sel == LEAVE)
+			leave();
+		else if (sel == LOGIN)
+			login();
+		else if (sel == LOGOUT)
+			logout();
+		else if (sel == BANKING)
+			banking();
+		else if (sel == SAVE)
+			save();
+		else if (sel == LOAD)
+			load();
+		else if (sel == EXIT) {
+			System.out.println("시스템을 종료합니다.");
+			isRun=false;
+		}
 	}
 
 	private void printUsersInfo() {
@@ -115,7 +148,34 @@ public class AtmSystem {
 		System.out.println("회원탈퇴완료");
 		log = -1;
 	}
+	
 
+	private void login() {
+		System.out.println("====== 로그인 ======");
+
+		int code = (int) input("회원코드 입력", NUM);
+		String pw = (String) input("비밀번호 입력", STR);
+
+		User user = new User(code, pw);
+
+		log = users.indexOf(user);
+		System.out.println(log);
+		if (log != -1)
+			System.out.println("로그인 완료");
+		else
+			System.err.println("회원정보를 확인해주세요.");
+	}
+
+	private void logout() {
+		System.out.println("====== 로그아웃 ======");
+		log = -1;
+		System.out.println("로그아웃 완료");
+	}
+	
+	private void banking() {
+		
+	}
+	
 	private void openAccount() {
 		User user = users.get(log);
 		if (user.getAccountSize() == 3) {
@@ -144,7 +204,7 @@ public class AtmSystem {
 
 			boolean isFound = false;
 			for (int i = 0; i < users.size(); i++)
-				if (users.get(i).getAccount(code) != null)
+				if (users.get(i).getAccountByCode(code) != null)
 					isFound = true;
 
 			if (!isFound)
@@ -175,30 +235,16 @@ public class AtmSystem {
 			return;
 		}
 		
-		user.removeAccount(user.getAccountByIndex(sel));
+		user.removeAccount(sel);
 		System.out.println("계좌철회완료");
 	}
-
-	private void login() {
-		System.out.println("====== 로그인 ======");
-
-		int code = (int) input("회원코드 입력", NUM);
-		String pw = (String) input("비밀번호 입력", STR);
-
-		User user = new User(code, pw);
-
-		log = users.indexOf(user);
-		System.out.println(log);
-		if (log != -1)
-			System.out.println("로그인 완료");
-		else
-			System.err.println("회원정보를 확인해주세요.");
+	
+	private void save() {
+		
 	}
-
-	private void logout() {
-		System.out.println("====== 로그아웃 ======");
-		log = -1;
-		System.out.println("로그아웃 완료");
+	
+	private void load() {
+		
 	}
 
 	private Object input(String msg, int type) {
