@@ -69,7 +69,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		String msg = String.format("%s(%d)님 계좌 목록\n", this.name, this.code);
+		String msg = String.format("--- %s(%d)님 계좌 ---\n", this.name, this.code);
 		int size = accounts.size();
 		for (int i = 0; i < size; i++) {
 			msg += String.format("%d) %s", i + 1, accounts.get(i));
