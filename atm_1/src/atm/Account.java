@@ -31,6 +31,6 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return String.format("계좌 %d", code);
+		return String.format("%d - 잔액 : %d원", code, money);
 	}
 }
