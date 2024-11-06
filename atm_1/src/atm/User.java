@@ -36,15 +36,15 @@ public class User {
 		accounts.add(account);
 	}
 
-	public void removeAccount(Account account) {
-		accounts.remove(account);
+	public void removeAccount(int index) {
+		accounts.remove(index);
 	}
 
 	public Account getAccountByIndex(int index) {
 		return accounts.get(index);
 	}
 
-	public Account getAccount(int code) {
+	public Account getAccountByCode(int code) {
 		Account account = new Account(code);
 
 		int idx = accounts.indexOf(account);
