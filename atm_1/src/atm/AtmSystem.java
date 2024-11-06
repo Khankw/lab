@@ -52,6 +52,10 @@ public class AtmSystem {
 		// 로그인
 		// 뱅킹기능(입금,출금,조회,이체,계좌생성,계좌철회)
 		// 파일기능(저장,로드)
+		
+		// 마지막 커밋 메세지 :
+		// Release v1.0.0 with core features
+		
 		load();
 		while (isRun) {
 			runMain();
