@@ -7,7 +7,11 @@ public class Account {
 	public Account(int code) {
 		this.code = code;
 	}
-
+	
+	public int getCode() {
+		return code;
+	}
+	
 	public int getMoney() {
 		return money;
 	}
