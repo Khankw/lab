@@ -225,13 +225,17 @@ public class AtmSystem {
 		}
 
 		account.addMoney(money);
-		System.out.println(getAccountInfo(account));
+		System.out.println(account);
 		System.out.println("입금완료");
 	}
 
 	private Account selectAccount() {
 		User user = users.get(log);
-		System.out.println(user);
+		for(int i=0;i<user.getAccountSize();i++) {
+			int code = user.getAccountByIndex(i).getCode();
+			System.out.println(String.format("%d) %d", i+1, code));
+		}
+
 		int sel = (int) input("계좌 선택", NUM) - 1;
 
 		if (sel < 0 || sel >= user.getAccountSize()) {
@@ -240,13 +244,6 @@ public class AtmSystem {
 		}
 
 		return user.getAccountByIndex(sel);
-	}
-
-	private String getAccountInfo(Account account) {
-		int code = account.getCode();
-		int money = account.getMoney();
-		String str = String.format("계좌 %d - 잔액 : %d원", code, money);
-		return str;
 	}
 
 	private void withdrawal() {
@@ -270,7 +267,7 @@ public class AtmSystem {
 
 		account.addMoney(-money);
 
-		System.out.println(getAccountInfo(account));
+		System.out.println(account);
 		System.out.println("출금완료");
 	}
 
@@ -281,7 +278,7 @@ public class AtmSystem {
 		if (account == null)
 			return;
 
-		System.out.println(getAccountInfo(account));
+		System.out.println(account);
 	}
 
 	private void transfer() {
@@ -305,9 +302,9 @@ public class AtmSystem {
 		}
 
 		System.out.println(account);
-		int money = (int) input("출금 금액 입력", NUM);
+		int money = (int) input("이체 금액 입력", NUM);
 		if (money <= 0) {
-			System.err.println("0이하의 금액은 출금이 불가합니다.");
+			System.err.println("0이하의 금액은 이체가 불가합니다.");
 			return;
 		}
 
@@ -319,16 +316,17 @@ public class AtmSystem {
 		account.addMoney(-money);
 		transferAcc.addMoney(money);
 
-		System.out.println(getAccountInfo(account));
+		System.out.println(account);
 		System.out.println("이체완료");
 	}
 
 	private Account getAccountByCode(int code) {
-		Account account = null;
 		for (int i = 0; i < users.size(); i++) {
-			account = users.get(i).getAccountByCode(code);
+			Account account = users.get(i).getAccountByCode(code);
+			if (account!=null)
+				return account;
 		}
-		return account;
+		return null;
 	}
 
 	private void openAccount() {
@@ -363,7 +361,11 @@ public class AtmSystem {
 	private void closeAccount() {
 		System.out.println("====== 계좌철회 ======");
 		User user = users.get(log);
-		System.out.println(user);
+		for(int i=0;i<user.getAccountSize();i++) {
+			int code = user.getAccountByIndex(i).getCode();
+			System.out.println(String.format("%d) %d", i+1, code));
+		}
+		
 		int sel = (int) input("계좌 선택", NUM) - 1;
 
 		if (sel < 0 || sel >= user.getAccountSize()) {
