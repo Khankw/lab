@@ -39,7 +39,7 @@ public class TimerSystem {
 			currentTime = cal.getTimeInMillis();
 			if (currentTime - lastTime >= ticksPerSecond) {
 				String curTime = sdf.format(cal.getTime());
-				String timeStr = String.format("%s(남은 시간 : %d초)", curTime, remainingTime / ticksPerSecond);
+				String timeStr = String.format("%s (남은 시간 : %d초)", curTime, remainingTime / ticksPerSecond);
 				System.out.println(timeStr);
 				timeElapsed = currentTime - lastTime;
 				remainingTime -= timeElapsed;
